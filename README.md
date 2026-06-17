@@ -1,0 +1,114 @@
+# ⇄ Conduit — a cross-border value-routing agent
+
+**An AI agent that delivers value across borders and checks out by itself.**
+Tell it *"get $40 of value to my brother in Lagos"* and it figures out what's
+actually **redeemable there** — local airtime, a local supermarket card, mobile
+data — assembles the basket, and pays from balance with **no human in the loop**.
+
+Built for the Bitrefill *"AI agents are the next customer"* challenge, on the
+Bitrefill Personal REST API (`api.bitrefill.com/v2`), with a free LLM brain.
+
+> A US Amazon card is useless in Lagos. Cross-border value delivery is an
+> **optimization + fulfillment** problem, not a lookup — pick the right
+> *instruments* for the destination, fit them to real denominations and a budget,
+> then settle autonomously. Conduit does the whole loop.
+
+---
+
+## The flow
+
+```
+intent text ──▶ 1 Intent     LLM → {amount, destination country, needs}
+            ──▶ 2 Discover   real instruments for that country (airtime, local
+                              gift cards, eSIM, bills) from the Bitrefill API
+            ──▶ 3 Optimize   LLM allocates budget across the most locally-useful
+                              mix; code snaps each share to a REAL denomination by
+                              its true settlement cost (price), never face value
+            ──▶ 4 Policy     spend caps replace human approval → truly autonomous
+            ──▶ 5 Checkout   ONE multi-item invoice, payment_method=balance,
+                              auto_pay; poll each order to delivered; return codes
+```
+
+### Why the cost handling is honest
+Every Bitrefill package carries `price` — its real cost in the settlement currency
+(e.g. 5,000 NGN airtime = $3.26) — alongside the local face `value`. Conduit budgets
+against `price`, so cross-currency math needs no FX guessing; the recipient still
+sees local face value.
+
+---
+
+## Run it
+
+```bash
+uv sync
+cp .env.example .env     # set BITREFILL_API_KEY and a free LLM key (LLM_API_KEY)
+
+# Web app (recommended) — watch the agent route + check out live:
+uv run uvicorn web.app:app --port 8000      # http://localhost:8000  (about: /landing)
+
+# Headless:
+uv run python -m bitrefill_agent.router.engine "Get \$40 to my brother in Lagos, Nigeria"
+uv run python -m bitrefill_agent.router.engine "€30 to a friend landing in Tokyo" --live
+```
+
+A **free, tool-capable LLM** drives intent + allocation. Defaults target OpenRouter
+(`openai/gpt-oss-120b:free`); set `LLM_API_KEY`/`LLM_BASE_URL`/`LLM_MODEL` in `.env`.
+If the LLM is unavailable, a deterministic fallback still routes (degrades, never
+hard-fails).
+
+### Modes & test paths — no real money
+- **safe** (default): the **real** basket is planned over the live catalog, but
+  checkout runs against a free Bitrefill test product (`delos-syldavia`,
+  `test-gift-card-code`) — delivers real redemption codes, spends nothing.
+- **live** (`--live`): buys the real basket from balance. With the provisioned
+  €20 test credits this is a true account-balance checkout for a few cents.
+
+> Failed/undeliverable orders are auto-refunded; balance is read in EUR minor units
+> (2000 = €20.00). Bitrefill's shared test delivery rail is occasionally degraded —
+> when it is, the full routing runs and orders come back `permanent_failure`
+> (auto-refunded); rerun when it's healthy for delivered codes.
+
+---
+
+## Architecture
+
+```
+bitrefill_agent/
+  client.py        REST client: Bearer auth, {data} unwrap, BitrefillError
+  catalog.py       product search / details / denominations
+  purchase.py      buy() + buy_basket() (one multi-item invoice, per-order polling),
+                   invoice_settled() (settles on per-order status, not the flaky rollup),
+                   mask_code(), redacted audit log (log/transactions.jsonl)
+  esim.py extras.py  eSIM + phone/gift primitives
+  mcp_compare.py   lists the hosted MCP server's 7 tools (stack comparison)
+  router/
+    intent.py      free-text intent → RouteRequest (LLM + regex fallback)
+    discover.py    instruments for a country, classified, with real costs
+    optimize.py    LLM allocation + deterministic denomination fitting → Basket
+    policy.py      SpendPolicy — per-route/per-order caps, country allow-list
+    execute.py     autonomous checkout (safe | live), fulfillment report
+    engine.py      orchestrates and streams progress events
+web/
+  app.py           FastAPI: POST /api/route streams SSE; serves UI + landing
+  static/app.html  the live demo UI
+  static/landing.html  the landing page
+```
+
+### REST + MCP
+The execution engine is REST (full control, balance auto-pays the EUR credits since
+EUR is the account's primary sub-account). The hosted **MCP** server is documented and
+compared via `uv run python -m bitrefill_agent.mcp_compare` — it lists the official 7
+tools live and maps them to our hand-built functions.
+
+## Safety / autonomy
+- **Zero humans in the loop**: a `SpendPolicy` (caps + country allow-list) gates every
+  purchase instead of an interactive prompt.
+- Redemption codes are secrets — masked on screen, redacted in the audit log.
+- Every order is logged with invoice id, product, status.
+
+## Submission
+- Autonomous purchase: `bitrefill_agent/router/execute.py` (multi-item, `auto_pay`).
+- Landing page: `web/static/landing.html`. Demo UI: `web/static/app.html`.
+- Demo video script: `DEMO.md`.
+- Appendix — this started as a 7-milestone learning build (raw REST → LLM agent);
+  that history lives in git.

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Conduit — cross-border value routing</title>
+<style>
+  :root { --bg:#0b0e14; --panel:#141a24; --line:#222c3a; --txt:#e6edf3; --muted:#8b97a7;
+          --accent:#4ade80; --accent2:#38bdf8; --warn:#fbbf24; --bad:#f87171; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:15px/1.5 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+         background:var(--bg); color:var(--txt); }
+  header { padding:22px 28px; border-bottom:1px solid var(--line); display:flex; align-items:baseline; gap:14px; }
+  header h1 { margin:0; font-size:20px; letter-spacing:.3px; }
+  header .tag { color:var(--muted); font-size:13px; }
+  main { max-width:880px; margin:0 auto; padding:26px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:18px; margin-bottom:16px; }
+  textarea { width:100%; background:#0d121b; color:var(--txt); border:1px solid var(--line);
+             border-radius:9px; padding:12px; font:inherit; resize:vertical; min-height:64px; }
+  .row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:12px; }
+  select, button, input { font:inherit; }
+  select, input { background:#0d121b; color:var(--txt); border:1px solid var(--line); border-radius:8px; padding:8px 10px; }
+  button { background:var(--accent); color:#06210f; border:0; border-radius:8px; padding:10px 18px;
+           font-weight:650; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:default; }
+  .chips { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+  .chip { font-size:12.5px; color:var(--muted); border:1px dashed var(--line); border-radius:20px;
+          padding:5px 11px; cursor:pointer; }
+  .chip:hover { color:var(--txt); border-color:var(--accent2); }
+  .stage { opacity:0; transform:translateY(6px); animation:in .25s forwards; }
+  @keyframes in { to { opacity:1; transform:none; } }
+  .stage h3 { margin:0 0 8px; font-size:13px; text-transform:uppercase; letter-spacing:.7px; color:var(--accent2); }
+  .muted { color:var(--muted); }
+  .line { display:flex; justify-content:space-between; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); }
+  .line:last-child { border-bottom:0; }
+  .line .meta { color:var(--muted); font-size:13px; }
+  .pill { font-size:11.5px; padding:2px 8px; border-radius:20px; border:1px solid var(--line); }
+  .k-airtime{color:#7dd3fc} .k-mobile_data{color:#a5b4fc} .k-giftcard{color:#86efac}
+  .k-esim{color:#fca5fe} .k-bill{color:#fcd34d}
+  .ok { color:var(--accent); } .bad { color:var(--bad); } .warn { color:var(--warn); }
+  .why { font-size:13px; color:var(--muted); margin-top:2px; }
+  .totals { display:flex; gap:18px; margin-top:10px; font-size:14px; }
+  code { background:#0d121b; padding:1px 6px; border-radius:6px; }
+  a { color:var(--accent2); }
+</style>
+</head>
+<body>
+<header>
+  <h1>⇄ Conduit</h1>
+  <span class="tag">an AI agent that routes value across borders &amp; checks out by itself · <a href="/landing">about</a></span>
+</header>
+<main>
+  <div class="card">
+    <textarea id="intent" placeholder="e.g. Get $40 of value to my brother in Lagos, Nigeria — he needs airtime and groceries."></textarea>
+    <div class="chips" id="examples"></div>
+    <div class="row">
+      <button id="go">Route &amp; buy →</button>
+      <label class="muted">mode
+        <select id="mode">
+          <option value="safe">safe (free test product)</option>
+          <option value="live">live (spends test credit)</option>
+        </select>
+      </label>
+      <label class="muted">budget cap $
+        <input id="cap" type="number" value="60" style="width:72px" />
+      </label>
+      <span id="status" class="muted"></span>
+    </div>
+  </div>
+  <div id="out"></div>
+</main>
+<script>
+const EXAMPLES = [
+  "Get $40 of value to my brother in Lagos, Nigeria — he needs airtime and groceries.",
+  "€30 to a friend landing in Tokyo tomorrow, mostly travel data.",
+  "Send $25 to my cousin in Manila, Philippines for phone credit and groceries.",
+  "$20 to a student in Nairobi, Kenya — data and a little airtime.",
+];
+const ex = document.getElementById('examples');
+EXAMPLES.forEach(t => { const c=document.createElement('span'); c.className='chip'; c.textContent=t;
+  c.onclick=()=>document.getElementById('intent').value=t; ex.appendChild(c); });
+
+const out = document.getElementById('out');
+const KIND = k => `<span class="pill k-${k}">${k.replace('_',' ')}</span>`;
+
+function stageEl(title){ const d=document.createElement('div'); d.className='stage card';
+  d.innerHTML=`<h3>${title}</h3>`; out.appendChild(d); return d; }
+
+function renderIntent(d){ const e=stageEl('Understood intent');
+  e.innerHTML+=`<div>Send <b>${d.currency} ${d.amount}</b> to <b>${d.country}</b>
+   ${d.needs.length?'· needs: '+d.needs.join(', '):''}</div>
+   ${d.recipient_phone?`<div class="muted">phone ${d.recipient_phone}</div>`:''}`; }
+
+function renderDiscover(d){ const e=stageEl(`Discovered ${d.count} local instruments in ${d.country}`);
+  const top=d.instruments.slice(0,8).map(i=>`${KIND(i.kind)} ${i.name} <span class="muted">·from $${i.min_cost}</span>`).join(' &nbsp; ');
+  e.innerHTML+=`<div class="muted" style="line-height:2">${top}${d.count>8?' …':''}</div>`; }
+
+function renderOptimize(d){ const e=stageEl('Optimized basket');
+  d.lines.forEach(l=>{ e.innerHTML+=`<div class="line"><div><b>${l.name}</b> ${KIND(l.kind)}
+     <div class="why">${l.why}</div></div>
+     <div style="text-align:right"><div>${l.face}</div><div class="meta">$${l.cost}</div></div></div>`; });
+  e.innerHTML+=`<div class="totals"><span>total <b>$${d.total_cost}</b></span>
+     <span class="muted">leftover $${d.leftover}</span></div>`;
+  if(d.notes && d.notes.length) e.innerHTML+=`<div class="why">${d.notes.join(' · ')}</div>`; }
+
+function renderApproved(d){ const e=stageEl('Policy check');
+  e.innerHTML+=`<div class="ok">✓ autonomous spend approved — $${d.total_cost} within caps. No human in the loop.</div>`; }
+
+function renderDeclined(d){ const e=stageEl('Declined');
+  e.innerHTML+=`<div class="bad">✗ ${d.reason}</div>`; }
+
+function renderExecute(d){ const e=stageEl(`Autonomous checkout · ${d.mode} mode`);
+  d.lines.forEach(l=>{ const ok=l.status==='delivered';
+    e.innerHTML+=`<div class="line"><div><b>${l.name}</b> ${KIND(l.kind)}</div>
+      <div style="text-align:right"><span class="${ok?'ok':'warn'}">${l.status}</span>
+      <span class="muted"> code </span><code>${l.code}</code></div></div>`; });
+  e.innerHTML+=`<div class="totals"><span>invoice <code>${d.invoice_id}</code></span>
+     <span class="${d.all_delivered?'ok':'warn'}">${d.all_delivered?'all delivered ✓':'partial'}</span></div>`;
+  if(d.notes && d.notes.length) e.innerHTML+=`<div class="why">${d.notes.join(' ')}</div>`; }
+
+document.getElementById('go').onclick = async () => {
+  const intent=document.getElementById('intent').value.trim();
+  if(!intent) return;
+  out.innerHTML=''; const btn=document.getElementById('go'); btn.disabled=true;
+  const st=document.getElementById('status'); st.textContent='routing…';
+  const res = await fetch('/api/route', { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ intent, mode:document.getElementById('mode').value,
+      max_per_route: parseFloat(document.getElementById('cap').value)||60 }) });
+  const reader=res.body.getReader(); const dec=new TextDecoder(); let buf='';
+  while(true){ const {value,done}=await reader.read(); if(done) break;
+    buf+=dec.decode(value,{stream:true}); const parts=buf.split('\n\n'); buf=parts.pop();
+    for(const p of parts){ const line=p.replace(/^data: /,'').trim(); if(!line) continue;
+      const {stage,data}=JSON.parse(line);
+      if(stage==='intent') renderIntent(data);
+      else if(stage==='discover') renderDiscover(data);
+      else if(stage==='optimize') renderOptimize(data);
+      else if(stage==='approved') renderApproved(data);
+      else if(stage==='declined') renderDeclined(data);
+      else if(stage==='execute') renderExecute(data);
+      else if(stage==='error'){ const e=stageEl('Error'); e.innerHTML+=`<div class="bad">${data.message}</div>`; }
+    } }
+  st.textContent='done'; btn.disabled=false;
+};
+</script>
+</body>
+</html>

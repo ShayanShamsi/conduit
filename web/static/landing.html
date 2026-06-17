@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Conduit — AI agents are the next customer</title>
+<style>
+  :root { --bg:#0b0e14; --panel:#141a24; --line:#222c3a; --txt:#e6edf3; --muted:#8b97a7; --accent:#4ade80; --accent2:#38bdf8; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:16px/1.65 ui-sans-serif,system-ui,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--txt); }
+  .wrap { max-width:780px; margin:0 auto; padding:48px 26px 80px; }
+  h1 { font-size:40px; margin:.2em 0; letter-spacing:.3px; }
+  h2 { font-size:21px; margin-top:38px; border-bottom:1px solid var(--line); padding-bottom:6px; }
+  .lede { font-size:19px; color:#cdd6e0; }
+  .cta { display:inline-block; margin-top:22px; background:var(--accent); color:#06210f; font-weight:700;
+         text-decoration:none; padding:13px 26px; border-radius:10px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px; }
+  .box { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  .box h3 { margin:0 0 6px; font-size:15px; color:var(--accent2); }
+  .muted { color:var(--muted); } code,pre { background:#0d121b; border-radius:6px; }
+  code { padding:1px 6px; } pre { padding:14px; overflow:auto; border:1px solid var(--line); }
+  a { color:var(--accent2); }
+  .flow { color:var(--muted); font-size:15px; }
+  .flow b { color:var(--txt); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="muted">Bitrefill · "AI agents are the next customer"</p>
+  <h1>⇄ Conduit</h1>
+  <p class="lede">Tell an AI agent <i>“get $40 of value to my brother in Lagos.”</i>
+     It figures out what's actually <b>redeemable there</b> — local airtime, a local
+     supermarket card, mobile data — assembles the basket, and <b>checks out on its own</b>.
+     No human clicks pay.</p>
+  <a class="cta" href="/">Try the live demo →</a>
+
+  <h2>Why it's hard (and interesting)</h2>
+  <p>A US Amazon card is useless in Lagos. Cross-border value delivery is an
+     <b>optimization + fulfillment</b> problem, not a lookup: pick the right
+     <i>instruments</i> for the destination, fit them to real denominations and a budget,
+     then settle — autonomously. Conduit does the whole loop over Bitrefill's catalog of
+     1,500+ brands across 170+ countries.</p>
+
+  <h2>How it works</h2>
+  <p class="flow"><b>1 Intent</b> — an LLM parses “$40 to my brother in Lagos” into amount,
+     destination (NG), and needs. &nbsp;→&nbsp; <b>2 Discover</b> — pull the country's real
+     instruments (airtime, local gift cards, eSIM, bills) from the Bitrefill REST API.
+     &nbsp;→&nbsp; <b>3 Optimize</b> — the agent allocates the budget across the most
+     locally-useful mix; code snaps each share to a real denomination by its true USD cost.
+     &nbsp;→&nbsp; <b>4 Policy</b> — spend caps replace a human approval click, so it's truly
+     autonomous. &nbsp;→&nbsp; <b>5 Checkout</b> — one multi-item invoice, paid from balance,
+     each order polled to <code>delivered</code> and the redemption codes returned.</p>
+
+  <div class="grid">
+    <div class="box"><h3>Autonomous checkout</h3><p class="muted">One <code>POST /invoices</code>
+      with many products, <code>payment_method: balance</code>, <code>auto_pay</code>. No human in the loop.</p></div>
+    <div class="box"><h3>Real cost-aware routing</h3><p class="muted">Budgets against each package's
+      true settlement <code>price</code>, not face value — so cross-currency math is honest.</p></div>
+    <div class="box"><h3>Per-order delivery</h3><p class="muted">Polls <code>orders[i].status</code>
+      (never the flaky rollup) and masks every redemption code.</p></div>
+    <div class="box"><h3>Spend policy</h3><p class="muted">Per-route / per-order caps and country
+      allow-lists gate every purchase — autonomy with guardrails.</p></div>
+  </div>
+
+  <h2>Run it</h2>
+  <pre>uv sync
+cp .env.example .env   # BITREFILL_API_KEY + a free LLM key (LLM_API_KEY)
+uv run uvicorn web.app:app --reload    # open http://localhost:8000
+
+# or headless:
+uv run python -m bitrefill_agent.router.engine "Get $40 to my brother in Lagos, Nigeria"</pre>
+  <p class="muted">Demos run in <b>safe mode</b> on a free Bitrefill test product (delivers real
+     codes, spends nothing). <code>--live</code> spends provisioned test credits on the real basket.</p>
+
+  <p style="margin-top:34px"><a href="/">← back to the demo</a> ·
+     <a href="https://github.com/ShayanShamsi">GitHub</a></p>
+</div>
+</body>
+</html>
