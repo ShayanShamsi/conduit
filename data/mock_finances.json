@@ -1,0 +1,16 @@
+{
+  "_note": "MOCK data for demo only — not real personal finance. Edit freely or upload your own.",
+  "currency": "EUR",
+  "monthly_income_net": 2600,
+  "fixed_costs": {
+    "rent": 950,
+    "utilities": 140,
+    "transport": 90,
+    "groceries": 380,
+    "insurance": 120,
+    "subscriptions": 45
+  },
+  "monthly_discretionary": 180,
+  "savings_goal_monthly": 300,
+  "risk_notes": "Keep at least 100 EUR/month unallocated as buffer."
+}

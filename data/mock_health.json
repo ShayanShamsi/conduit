@@ -1,0 +1,12 @@
+{
+  "_note": "MOCK data for demo only — not real health data. Edit freely or upload your own.",
+  "sleep_avg_hours": 5.8,
+  "sleep_quality": "restless, frequent waking",
+  "steps_avg_daily": 4200,
+  "resting_heart_rate": 74,
+  "weight_kg": 86,
+  "goal_weight_kg": 78,
+  "activity_level": "mostly sedentary desk job",
+  "dietary": "no restrictions, wants more protein",
+  "goals_free_text": "sleep better, move more, build a simple home workout habit"
+}

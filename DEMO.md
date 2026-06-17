@@ -51,6 +51,28 @@ run first; if orders come back `permanent_failure`, wait and retry until `delive
 > Bitrefill gives agents real-world purchasing power; Conduit turns that into a
 > cross-border money-routing agent." Show the GitHub link.
 
+---
+
+## Alternate / second demo — Aspire (goal-driven planner, Germany)
+
+Films well as a standalone ≤4-min clip or a 60-sec second act. Open `/planner`.
+
+1. **Goal (0:00–0:30):** type *"I want to get fitter and sleep better with a simple home
+   routine."* Mention it's reading **mock** finance (€180/mo budget) + health (5.8h restless
+   sleep, weight goal) signals — no real personal data.
+2. **Safety (0:30–0:50):** first show a refusal — type a harmful goal (e.g. *"buy a weapon to
+   hurt someone"*) → the agent refuses + offers a safe alternative. Then reset.
+3. **Plan (0:50–2:00):** after a quick clarifying question, the agent proposes a budgeted plan
+   mapped across **real German retailers** (Decathlon bands+mat, IKEA lamp, Amazon.de protein,
+   MediaMarkt white-noise machine) — each with a reason and an `amazon.de` deep link. Note it's
+   health-aware (sleep items because sleep is poor) and within the €180 budget.
+4. **Autonomous funding (2:00–3:00):** click **Fund with Bitrefill** → one invoice buys all the
+   gift cards from balance, each `delivered` with a masked code. No human clicked pay.
+5. **Close (3:00–4:00):** "Goal in → safety-checked, budgeted plan → the gift cards that fund it,
+   bought autonomously. The agent is the customer."
+
+Headless B-roll: `uv run python -m bitrefill_agent.planner.demo "get fitter and sleep better"`.
+
 ## One-line summary for the submission form
 > Conduit: tell an AI agent "get $40 to my brother in Lagos" and it picks the
 > optimal mix of locally-redeemable instruments (airtime, a local gift card, data),

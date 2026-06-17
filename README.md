@@ -8,6 +8,12 @@ data — assembles the basket, and pays from balance with **no human in the loop
 Built for the Bitrefill *"AI agents are the next customer"* challenge, on the
 Bitrefill Personal REST API (`api.bitrefill.com/v2`), with a free LLM brain.
 
+**This repo ships two agents that share one autonomous-purchase primitive:**
+- **⇄ Conduit** — cross-border value routing (below).
+- **✦ Aspire** — a goal-driven life planner: tell it a life goal; it safety-checks it,
+  reads your (mock) budget + health signals, plans purchases within budget, and
+  **autonomously buys the German gift cards that fund them**. See [Aspire](#-aspire--a-goal-driven-life-planner-germ-eur).
+
 ![Conduit routing $40 to Lagos into MTN airtime + a Spar supermarket card + mobile data, then delivering all three autonomously](docs/screenshot.png)
 
 <sub>A real captured run: $40 → Lagos. Redemption codes are masked; invoice
@@ -114,9 +120,45 @@ tools live and maps them to our hand-built functions.
 - Redemption codes are secrets — masked on screen, redacted in the audit log.
 - Every order is logged with invoice id, product, status.
 
+---
+
+## ✦ Aspire — a goal-driven life planner (Germany / EUR)
+
+A second agent on the same purchase primitive. You tell it a **life goal**; it:
+
+1. **Safety-checks** the goal (keyword backstop + LLM classifier) — harmful goals are
+   refused with a constructive alternative, never planned or funded.
+2. Reads **mock finance + health** signals (`data/mock_*.json`, editable or uploaded) —
+   budget becomes a hard cap; health signals tailor the picks.
+3. Has a short **clarifying** back-and-forth, then proposes a **plan** of 3–6 concrete
+   purchases mapped to real German retailers (Amazon.de, MediaMarkt, IKEA, Decathlon…).
+4. **Autonomously buys the gift cards** that fund the plan — one invoice, paid from
+   balance — and returns the codes + an itemized shopping list with deep links.
+
+```bash
+uv run uvicorn web.app:app --port 8000     # then open http://localhost:8000/planner
+uv run python -m bitrefill_agent.planner.demo "get fitter and sleep better"
+```
+
+A real captured run (`get fitter and sleep better`, €180/mo budget) delivered four cards
+in one invoice — Decathlon €50 (resistance bands + mat), IKEA €30 (lamp), Amazon.de €50
+(whey protein), MediaMarkt €50 (white-noise machine) — all `delivered`, plan €153 within
+budget, surplus kept as gift-card balance.
+
+> **Honest scope:** Aspire autonomously buys the *gift cards* (the part Bitrefill enables)
+> and hands back an itemized shopping list with `amazon.de/s?k=…` deep links — it does not
+> drive a real retailer-site checkout (login/ToS). Demo runs in **safe mode** because
+> Amazon.de's €50 minimum exceeds the €20 test credits; the mechanic is identical to live.
+
+`bitrefill_agent/planner/`: `safety.py` · `profile.py` · `plan.py` · `converse.py` · `fund.py`.
+
+---
+
 ## Submission
-- Autonomous purchase: `bitrefill_agent/router/execute.py` (multi-item, `auto_pay`).
-- Landing page: `web/static/landing.html`. Demo UI: `web/static/app.html`.
+- Autonomous purchase: `bitrefill_agent/router/execute.py` (Conduit, multi-item, `auto_pay`)
+  and `bitrefill_agent/planner/fund.py` (Aspire, multi-retailer gift-card funding).
+- Landing page: `web/static/landing.html`. Demo UIs: `web/static/app.html` (Conduit),
+  `web/static/planner.html` (Aspire).
 - Demo video script: `DEMO.md`.
 - Appendix — this started as a 7-milestone learning build (raw REST → LLM agent);
   that history lives in git.
