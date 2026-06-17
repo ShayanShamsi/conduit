@@ -134,10 +134,29 @@ def de_retailer_menu(client: BitrefillClient, *, limit: int = 30) -> list[Retail
     return list(seen.values())
 
 
+# Real on-site search URLs per German retailer, so every item links to actual,
+# buyable products on the store where the gift card is redeemable. Matched by
+# substring against the retailer's product id, with a Google fallback.
+RETAILER_SEARCH = [
+    ("amazon", "https://www.amazon.de/s?k={q}"),
+    ("media-markt", "https://www.mediamarkt.de/de/search.html?query={q}"),
+    ("ikea", "https://www.ikea.com/de/de/search/?q={q}"),
+    ("decathlon", "https://www.decathlon.de/search?Ntt={q}"),
+    ("zalando", "https://www.zalando.de/catalog/?q={q}"),
+    ("itunes", "https://www.apple.com/de/search/{q}"),
+    ("apple", "https://www.apple.com/de/search/{q}"),
+    ("saturn", "https://www.saturn.de/de/search.html?query={q}"),
+    ("otto", "https://www.otto.de/suche/{q}/"),
+    ("h-m", "https://www2.hm.com/de_de/search-results.html?q={q}"),
+    ("douglas", "https://www.douglas.de/de/search?q={q}"),
+]
+
+
 def _search_url(retailer_id: str, query: str) -> str:
     q = urllib.parse.quote_plus(query)
-    if "amazon" in retailer_id:
-        return f"https://www.amazon.de/s?k={q}"
+    for key, template in RETAILER_SEARCH:
+        if key in retailer_id:
+            return template.format(q=q)
     return f"https://www.google.com/search?q={q}"
 
 

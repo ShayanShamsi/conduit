@@ -80,7 +80,7 @@ function renderPlan(p){
   const c=document.createElement('div'); c.className='card';
   let html=`<h3>Plan toward your goal</h3>`;
   p.items.forEach(i=>{ html+=`<div class="item"><div><b>${i.name}</b> <span class="pill">${i.retailer_name}</span>
-    <div class="why">${i.why}</div><div class="why"><a href="${i.search_url}" target="_blank">find it →</a></div></div>
+    <div class="why">${i.why}</div><div class="why"><a href="${i.search_url}" target="_blank" rel="noopener">view on ${i.retailer_name.replace(' Germany','')} →</a></div></div>
     <div style="text-align:right">€${i.est_price_eur}</div></div>`; });
   const okb=p.within_budget;
   html+=`<div class="totals"><span>planned <b>€${p.items_total}</b></span>
@@ -132,7 +132,7 @@ function renderFunded(d){
   d.cards.forEach(card=>{ const ok=card.status==='delivered';
     html+=`<div class="item"><div><b>${card.retailer}</b> €${card.denomination_eur} gift card</div>
       <div style="text-align:right"><span class="${ok?'good':'warn'}">${card.status}</span> <span class="muted">code</span> <code>${card.code}</code></div></div>`;
-    card.shopping_list.forEach(s=>{ html+=`<div class="item" style="padding-left:14px"><div class="muted">↳ ${s.name} <a href="${s.url}" target="_blank">find →</a></div><div class="muted">€${s.est_price_eur}</div></div>`; });
+    card.shopping_list.forEach(s=>{ html+=`<div class="item" style="padding-left:14px"><div class="muted">↳ ${s.name} <a href="${s.url}" target="_blank" rel="noopener">view in store →</a></div><div class="muted">€${s.est_price_eur}</div></div>`; });
   });
   html+=`<div class="totals"><span>invoice <code>${d.invoice_id}</code></span><span class="${d.all_delivered?'good':'warn'}">${d.all_delivered?'all delivered ✓':'partial'}</span></div>`;
   if(d.notes && d.notes.length) html+=`<div class="note">${d.notes.join(' ')}</div>`;
