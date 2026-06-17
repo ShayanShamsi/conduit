@@ -8,6 +8,11 @@ data — assembles the basket, and pays from balance with **no human in the loop
 Built for the Bitrefill *"AI agents are the next customer"* challenge, on the
 Bitrefill Personal REST API (`api.bitrefill.com/v2`), with a free LLM brain.
 
+![Conduit routing $40 to Lagos into MTN airtime + a Spar supermarket card + mobile data, then delivering all three autonomously](docs/screenshot.png)
+
+<sub>A real captured run: $40 → Lagos. Redemption codes are masked; invoice
+`ca7c61cd` delivered all three orders from one balance payment.</sub>
+
 > A US Amazon card is useless in Lagos. Cross-border value delivery is an
 > **optimization + fulfillment** problem, not a lookup — pick the right
 > *instruments* for the destination, fit them to real denominations and a budget,
@@ -49,6 +54,9 @@ uv run uvicorn web.app:app --port 8000      # http://localhost:8000  (about: /la
 # Headless:
 uv run python -m bitrefill_agent.router.engine "Get \$40 to my brother in Lagos, Nigeria"
 uv run python -m bitrefill_agent.router.engine "€30 to a friend landing in Tokyo" --live
+
+# Live-debit proof — a real ~$0.18 autonomous purchase, balance before/after:
+uv run python -m bitrefill_agent.demo_live
 ```
 
 A **free, tool-capable LLM** drives intent + allocation. Defaults target OpenRouter

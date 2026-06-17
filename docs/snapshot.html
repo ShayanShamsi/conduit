@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<title>Conduit — captured run</title>
+<style>
+  :root { --bg:#0b0e14; --panel:#141a24; --line:#222c3a; --txt:#e6edf3; --muted:#8b97a7;
+          --accent:#4ade80; --accent2:#38bdf8; --warn:#fbbf24; --bad:#f87171; }
+  * { box-sizing:border-box; }
+  body { margin:0; width:880px; font:15px/1.5 ui-sans-serif,system-ui,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--txt); }
+  header { padding:20px 28px; border-bottom:1px solid var(--line); display:flex; align-items:baseline; gap:14px; }
+  header h1 { margin:0; font-size:20px; } header .tag { color:var(--muted); font-size:13px; }
+  main { padding:22px 28px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:14px; }
+  textarea { width:100%; background:#0d121b; color:var(--txt); border:1px solid var(--line); border-radius:9px; padding:12px; font:inherit; }
+  .row { display:flex; gap:12px; align-items:center; margin-top:12px; }
+  button { background:var(--accent); color:#06210f; border:0; border-radius:8px; padding:10px 18px; font-weight:650; }
+  .muted { color:var(--muted); }
+  h3 { margin:0 0 8px; font-size:13px; text-transform:uppercase; letter-spacing:.7px; color:var(--accent2); }
+  .line { display:flex; justify-content:space-between; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); }
+  .line:last-child { border-bottom:0; } .meta { color:var(--muted); font-size:13px; }
+  .pill { font-size:11.5px; padding:2px 8px; border-radius:20px; border:1px solid var(--line); }
+  .k-airtime{color:#7dd3fc} .k-mobile_data{color:#a5b4fc} .k-giftcard{color:#86efac}
+  .ok{color:var(--accent)} .why{font-size:13px;color:var(--muted);margin-top:2px}
+  .totals{display:flex;gap:18px;margin-top:10px;font-size:14px}
+  code{background:#0d121b;padding:1px 6px;border-radius:6px}
+</style></head>
+<body>
+<header><h1>⇄ Conduit</h1><span class="tag">an AI agent that routes value across borders &amp; checks out by itself</span></header>
+<main>
+  <div class="card">
+    <textarea>Get $40 of value to my brother in Lagos, Nigeria — he needs airtime and groceries.</textarea>
+    <div class="row"><button>Route &amp; buy →</button><span class="muted">mode safe · budget cap $60 · done</span></div>
+  </div>
+
+  <div class="card"><h3>Understood intent</h3>
+    <div>Send <b>USD 40</b> to <b>NG</b> · needs: airtime, groceries</div></div>
+
+  <div class="card"><h3>Discovered 41 local instruments in NG</h3>
+    <div class="muted" style="line-height:2"><span class="pill k-airtime">airtime</span> MTN Nigeria <span class="muted">·from $1.81</span> &nbsp;
+      <span class="pill k-giftcard">giftcard</span> Spar Nigeria <span class="muted">·from $0.33</span> &nbsp;
+      <span class="pill k-mobile_data">mobile data</span> Airtel Data Nigeria <span class="muted">·from $0.67</span> &nbsp;
+      <span class="pill k-giftcard">giftcard</span> Alpha Prime Grocery Stores <span class="muted">·from $0.32</span> …</div></div>
+
+  <div class="card"><h3>Optimized basket</h3>
+    <div class="line"><div><b>MTN Nigeria</b> <span class="pill k-airtime">airtime</span>
+      <div class="why">Core airtime for Nigeria matching the recipient's need for phone credit</div></div>
+      <div style="text-align:right"><div>30000 NGN</div><div class="meta">$19.85</div></div></div>
+    <div class="line"><div><b>Spar Nigeria</b> <span class="pill k-giftcard">giftcard</span>
+      <div class="why">Gift card usable at Spar supermarkets for groceries</div></div>
+      <div style="text-align:right"><div>20000 NGN</div><div class="meta">$13.40</div></div></div>
+    <div class="line"><div><b>Airtel Data Nigeria</b> <span class="pill k-mobile_data">mobile data</span>
+      <div class="why">Mobile data to complement airtime and keep him connected</div></div>
+      <div style="text-align:right"><div>25 GB</div><div class="meta">$5.30</div></div></div>
+    <div class="totals"><span>total <b>$38.55</b></span><span class="muted">leftover $1.45</span></div></div>
+
+  <div class="card"><h3>Policy check</h3>
+    <div class="ok">✓ autonomous spend approved — $38.55 within caps. No human in the loop.</div></div>
+
+  <div class="card"><h3>Autonomous checkout · one invoice</h3>
+    <div class="line"><div><b>MTN Nigeria</b> <span class="pill k-airtime">airtime</span></div>
+      <div style="text-align:right"><span class="ok">delivered</span> <span class="muted">code</span> <code>0155…85</code></div></div>
+    <div class="line"><div><b>Spar Nigeria</b> <span class="pill k-giftcard">giftcard</span></div>
+      <div style="text-align:right"><span class="ok">delivered</span> <span class="muted">code</span> <code>6323…94</code></div></div>
+    <div class="line"><div><b>Airtel Data Nigeria</b> <span class="pill k-mobile_data">mobile data</span></div>
+      <div style="text-align:right"><span class="ok">delivered</span> <span class="muted">code</span> <code>5753…01</code></div></div>
+    <div class="totals"><span>invoice <code>ca7c61cd</code></span><span class="ok">all delivered ✓</span></div></div>
+</main></body></html>
