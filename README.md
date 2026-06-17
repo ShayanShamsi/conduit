@@ -124,6 +124,11 @@ tools live and maps them to our hand-built functions.
 
 ## ✦ Aspire — a goal-driven life planner (Germany / EUR)
 
+![Aspire turning "get fitter and sleep better" into a budgeted multi-retailer plan, then autonomously buying the Decathlon, Amazon.de, IKEA and MediaMarkt gift cards that fund it](docs/screenshot-aspire.png)
+
+<sub>A real captured run: goal → safety-checked, budget-aware plan → four German gift
+cards delivered from one autonomous invoice `497d3b34`. Codes masked.</sub>
+
 A second agent on the same purchase primitive. You tell it a **life goal**; it:
 
 1. **Safety-checks** the goal (keyword backstop + LLM classifier) — harmful goals are

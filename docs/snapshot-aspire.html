@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<title>Aspire — captured run</title>
+<style>
+  :root { --bg:#0b0e14; --panel:#141a24; --line:#222c3a; --txt:#e6edf3; --muted:#8b97a7;
+          --accent:#a78bfa; --accent2:#38bdf8; --good:#4ade80; }
+  * { box-sizing:border-box; }
+  body { margin:0; width:880px; font:15px/1.55 ui-sans-serif,system-ui,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--txt); }
+  header { padding:20px 28px; border-bottom:1px solid var(--line); display:flex; align-items:baseline; gap:14px; }
+  header h1 { margin:0; font-size:20px; } header .tag { color:var(--muted); font-size:13px; }
+  main { padding:22px 28px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:14px; }
+  .bubble { padding:11px 14px; border-radius:12px; margin:8px 0; max-width:80%; }
+  .user { background:#1b2433; margin-left:auto; } .agent { background:#171f2b; border:1px solid var(--line); }
+  h3 { margin:0 0 8px; font-size:13px; text-transform:uppercase; letter-spacing:.7px; color:var(--accent); }
+  .item { display:flex; justify-content:space-between; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); }
+  .item:last-child { border-bottom:0; } .why { font-size:13px; color:var(--muted); margin-top:2px; }
+  .pill { font-size:11.5px; padding:2px 8px; border-radius:20px; border:1px solid var(--line); color:var(--accent2); }
+  .totals { display:flex; gap:16px; margin-top:10px; font-size:14px; flex-wrap:wrap; }
+  .good { color:var(--good); } .muted { color:var(--muted); } code { background:#0d121b; padding:1px 6px; border-radius:6px; }
+  .note { font-size:13px; color:var(--muted); margin-top:8px; }
+</style></head>
+<body>
+<header><h1>✦ Aspire</h1><span class="tag">tell it your goal → it plans within budget → buys the gift cards to fund it</span></header>
+<main>
+  <div class="card">
+    <div class="bubble user">I want to get fitter and sleep better with a simple home routine.</div>
+    <div class="bubble agent">A couple of quick questions so I plan the right things:<br>• Do you prefer home workouts or a gym? • How much bedroom space do you have?</div>
+    <div class="bubble user">Home workouts, small bedroom, no equipment yet.</div>
+    <div class="muted" style="font-size:13px">signals: budget EUR 180/month · sleep 5.8h (restless) · 4200 steps/day · weight 86→78 kg · mostly sedentary</div>
+  </div>
+
+  <div class="card"><h3>Plan toward your goal</h3>
+    <div class="item"><div><b>Fit Simplify Resistance Band Set</b> <span class="pill">Decathlon Germany</span><div class="why">Full-body strength training at home without equipment — builds muscle toward the weight goal.</div></div><div>€19.99</div></div>
+    <div class="item"><div><b>Decathlon Domyos Yoga Mat 180×60</b> <span class="pill">Decathlon Germany</span><div class="why">Comfortable surface for the home routine and mobility work.</div></div><div>€24.99</div></div>
+    <div class="item"><div><b>MyProtein Impact Whey Protein 1 kg</b> <span class="pill">Amazon.de Germany</span><div class="why">Supports muscle repair and the higher-protein diet noted in the profile.</div></div><div>€27.99</div></div>
+    <div class="item"><div><b>IKEA SINNERLIG LED Floor Lamp</b> <span class="pill">IKEA Germany</span><div class="why">Warm, dimmable evening light to wind down and improve sleep onset.</div></div><div>€29.99</div></div>
+    <div class="item"><div><b>Medion White-Noise Machine</b> <span class="pill">MediaMarkt Germany</span><div class="why">Masks noise for the restless, frequent-waking sleep pattern.</div></div><div>€49.99</div></div>
+    <div class="totals"><span>planned <b>€152.95</b></span><span class="good">within €180 budget ✓</span><span class="muted">gift cards €180 (+€27 kept as balance)</span></div>
+  </div>
+
+  <div class="card"><h3>Funded autonomously · one invoice</h3>
+    <div class="item"><div><b>Decathlon Germany</b> €50 gift card</div><div><span class="good">delivered</span> <span class="muted">code</span> <code>9458…63</code></div></div>
+    <div class="item"><div><b>Amazon.de Germany</b> €50 gift card</div><div><span class="good">delivered</span> <span class="muted">code</span> <code>5868…33</code></div></div>
+    <div class="item"><div><b>IKEA Germany</b> €30 gift card</div><div><span class="good">delivered</span> <span class="muted">code</span> <code>6444…38</code></div></div>
+    <div class="item"><div><b>MediaMarkt Germany</b> €50 gift card</div><div><span class="good">delivered</span> <span class="muted">code</span> <code>0773…60</code></div></div>
+    <div class="totals"><span>invoice <code>497d3b34</code></span><span class="good">all delivered ✓ — no human clicked pay</span></div>
+    <div class="note">Each card comes with a deep-linked Amazon.de / retailer shopping list to redeem.</div>
+  </div>
+</main></body></html>
